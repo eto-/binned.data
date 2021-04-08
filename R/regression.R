@@ -134,6 +134,16 @@ norm.test <- function (x, core=c("gauss", "poisson", "logexp", "cauchy", "emg", 
   invisible(r)
 }
 
+predict.ntest <- function(object, newdata) {
+  if (!inherits(object, "ntest"))
+    warning("calling predict.ntest(<fake-ntest-object>) ...")
+  if (missing(newdata) || is.null(newdata)) data <- object$x
+  else data <- newdata
+  data <- as.binned(data)
+
+  return(t$pdf(data$bins, as.list(t$v)))
+}
+
 plot.ntest <- function (t, resid=F, components=F, ...) {
   plot.components <- function (x, t) {
     p <- as.list(t$v)
@@ -159,6 +169,7 @@ plot.ntest <- function (t, resid=F, components=F, ...) {
     }
   }
 }
+
 
 # norm.test ancillaries
 norm.test.core.pdf <- function (pdf, f) {
