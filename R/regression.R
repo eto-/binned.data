@@ -69,7 +69,7 @@ fitter <- function (d, pdf, start, fixed=list(), counts.se=c(), bins.se=c(),
 }
 
 # norm.test
-norm.test <- function (x, core=c("gauss", "poisson", "logexp", "cauchy", "emg", "nemg", "user"), 
+norm.test <- function (x, core=c("gauss", "poisson", "logexp", "cauchy", "emg", "nemg", "exp", "user"), 
 		       background=c("none", "flat", "linear", "exponential", "step", "gauss"), 
 		       background.modifier=c("", "+", "!"), quiet=1, summary=F, plot=F, start=list(), fixed=list(), range=c(), user.pdf=NULL, ...) {
 
@@ -181,6 +181,7 @@ norm.test.core.pdf <- function (pdf, f) {
     emg= function (mids, p) p$c * demg(mids, p$m, abs(p$s), abs(p$l)),
     nemg= function (mids, p) p$c * dnemg(mids, p$m, abs(p$s), abs(p$l)),
     LE=, logexp= function (mids, p) p$c * do.call(dlogexp, c(list(x=mids), p[names(p) != "c"])),
+    exp= function (mids, p) p$c * exp(mids/-abs(p$t)),
     U=, user= f,
     stop ("unknown core pdf"))
   f
@@ -226,6 +227,7 @@ norm.test.def.parameters <- function (b, core, background, start, fixed) {
     emg=, nemg= c(par, l=par[['s']]),
     P=, poisson= par[1:2],
     LE=, logexp= par[1:2],
+    exp= c(par[1],t=unname(par[2])),
     U=, user= list(),
     stop ("unknown core pdf"))
 
